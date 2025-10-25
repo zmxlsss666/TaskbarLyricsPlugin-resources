@@ -1,0 +1,23 @@
+<Window x:Class="TaskbarLyrics.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="TaskbarLyrics" 
+        WindowStyle="None" 
+        AllowsTransparency="True"
+        Background="Transparent"
+        ShowInTaskbar="False"
+        Topmost="True"
+        ResizeMode="NoResize"
+        ShowActivated="False"
+        MouseDown="Window_MouseDown">
+    
+    <Border x:Name="LyricsContainer" 
+            Background="Transparent" 
+            Padding="10,4"
+            VerticalAlignment="Center">
+        <ContentControl x:Name="LyricsContent" 
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"/>
+    </Border>
+    
+</Window>
