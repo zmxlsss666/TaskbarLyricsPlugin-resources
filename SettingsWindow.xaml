@@ -1,0 +1,383 @@
+<Window x:Class="TaskbarLyrics.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="歌词设置" 
+        Height="600" 
+        Width="500"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        WindowStyle="None"
+        Background="Transparent"
+        AllowsTransparency="True">
+    
+    <Window.Resources>
+        <Style x:Key="ModernButton" TargetType="Button">
+            <Setter Property="Background" Value="#FF2196F3"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="15,8"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" 
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="8"
+                                BorderThickness="0">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#FF1976D2"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#FF0D47A1"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SecondaryButton" TargetType="Button">
+            <Setter Property="Background" Value="#FFE0E0E0"/>
+            <Setter Property="Foreground" Value="#333333"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="15,8"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" 
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="8"
+                                BorderThickness="0">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#FFBDBDBD"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#FF9E9E9E"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ModernComboBox" TargetType="ComboBox">
+            <Setter Property="Background" Value="#FAFAFA"/>
+            <Setter Property="BorderBrush" Value="#E0E0E0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="8"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="SectionHeader" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#333333"/>
+            <Setter Property="Margin" Value="0,15,0,10"/>
+        </Style>
+
+        <Style x:Key="SettingLabel" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Foreground" Value="#555555"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+    </Window.Resources>
+    
+    <Border Background="White" 
+            CornerRadius="12" 
+            BorderThickness="1" 
+            BorderBrush="#E0E0E0"
+            Effect="{StaticResource DropShadowEffect}">
+        <Grid Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            
+            <Border Grid.Row="0" Background="#FF2196F3" CornerRadius="8,8,0,0" Height="40">
+                <Grid>
+                    <TextBlock Text="歌词设置" 
+                               Foreground="White" 
+                               FontSize="16" 
+                               FontWeight="Bold"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"/>
+                    <Button x:Name="CloseButton"
+                            Content="✕"
+                            Foreground="White"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Width="30"
+                            Height="30"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            FontSize="14"
+                            FontWeight="Bold"
+                            Click="CloseButton_Click"
+                            Cursor="Hand">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border x:Name="border" 
+                                                    Background="Transparent"
+                                                    CornerRadius="4">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="border" Property="Background" Value="#E53935"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </Grid>
+            </Border>
+            
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,10,0,0">
+                <StackPanel>
+                    <Border Background="#F8F9FA" CornerRadius="8" Padding="15" Margin="0,0,0,15">
+                        <StackPanel>
+                            <TextBlock Text="🎨 字体设置" Style="{StaticResource SectionHeader}"/>
+                            
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="100"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="字体家族:" Style="{StaticResource SettingLabel}"/>
+                                <ComboBox Grid.Row="0" Grid.Column="1" x:Name="FontFamilyComboBox" Margin="5,3"
+                                          Style="{StaticResource ModernComboBox}"
+                                          SelectionChanged="FontFamilyComboBox_SelectionChanged">
+                                    <ComboBoxItem Content="MiSans"/>
+                                    <ComboBoxItem Content="Microsoft YaHei"/>
+                                    <ComboBoxItem Content="SimHei"/>
+                                    <ComboBoxItem Content="SimSun"/>
+                                    <ComboBoxItem Content="Arial"/>
+                                    <ComboBoxItem Content="Segoe UI"/>
+                                </ComboBox>
+
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="字体大小:" Style="{StaticResource SettingLabel}"/>
+                                <ComboBox Grid.Row="1" Grid.Column="1" x:Name="FontSizeComboBox" Margin="5,3"
+                                          Style="{StaticResource ModernComboBox}"
+                                          SelectionChanged="FontSizeComboBox_SelectionChanged">
+                                    <ComboBoxItem Content="12"/>
+                                    <ComboBoxItem Content="14"/>
+                                    <ComboBoxItem Content="16"/>
+                                    <ComboBoxItem Content="18"/>
+                                    <ComboBoxItem Content="20"/>
+                                    <ComboBoxItem Content="24"/>
+                                    <ComboBoxItem Content="28"/>
+                                </ComboBox>
+
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="字体颜色:" Style="{StaticResource SettingLabel}"/>
+                                <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Margin="5,3">
+                                    <ComboBox x:Name="FontColorComboBox" Width="120" 
+                                              Style="{StaticResource ModernComboBox}"
+                                              SelectionChanged="FontColorComboBox_SelectionChanged">
+                                        <ComboBoxItem Content="白色" Tag="#FFFFFF"/>
+                                        <ComboBoxItem Content="红色" Tag="#FF0000"/>
+                                        <ComboBoxItem Content="绿色" Tag="#00FF00"/>
+                                        <ComboBoxItem Content="蓝色" Tag="#0000FF"/>
+                                        <ComboBoxItem Content="黄色" Tag="#FFFF00"/>
+                                        <ComboBoxItem Content="青色" Tag="#00FFFF"/>
+                                        <ComboBoxItem Content="粉色" Tag="#FF00FF"/>
+                                    </ComboBox>
+                                    <Button Content="自定义" Margin="10,0,0,0" 
+                                            Style="{StaticResource SecondaryButton}"
+                                            Click="CustomFontColor_Click"/>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Background="#F8F9FA" CornerRadius="8" Padding="15" Margin="0,0,0,15">
+                        <StackPanel>
+                            <TextBlock Text="🌈 颜色设置" Style="{StaticResource SectionHeader}"/>
+                            
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="100"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="高亮颜色:" Style="{StaticResource SettingLabel}"/>
+                                <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Margin="5,3">
+                                    <ComboBox x:Name="HighlightColorComboBox" Width="120" 
+                                              Style="{StaticResource ModernComboBox}"
+                                              SelectionChanged="HighlightColorComboBox_SelectionChanged">
+                                        <ComboBoxItem Content="青色" Tag="#FF00FFFF"/>
+                                        <ComboBoxItem Content="黄色" Tag="#FFFFFF00"/>
+                                        <ComboBoxItem Content="绿色" Tag="#FF00FF00"/>
+                                        <ComboBoxItem Content="粉色" Tag="#FFFF00FF"/>
+                                        <ComboBoxItem Content="橙色" Tag="#FFFFA500"/>
+                                        <ComboBoxItem Content="金色" Tag="#FFFFD700"/>
+                                    </ComboBox>
+                                    <Button Content="自定义" Margin="10,0,0,0" 
+                                            Style="{StaticResource SecondaryButton}"
+                                            Click="CustomHighlightColor_Click"/>
+                                </StackPanel>
+
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="背景颜色:" Style="{StaticResource SettingLabel}"/>
+                                <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Margin="5,3">
+                                    <ComboBox x:Name="BackgroundColorComboBox" Width="120" 
+                                              Style="{StaticResource ModernComboBox}"
+                                              SelectionChanged="BackgroundColorComboBox_SelectionChanged">
+                                        <ComboBoxItem Content="透明" Tag="#00000000"/>
+                                        <ComboBoxItem Content="半透黑" Tag="#80000000"/>
+                                        <ComboBoxItem Content="黑色" Tag="#FF000000"/>
+                                        <ComboBoxItem Content="深灰" Tag="#FF202020"/>
+                                    </ComboBox>
+                                    <Button Content="自定义" Margin="10,0,0,0" 
+                                            Style="{StaticResource SecondaryButton}"
+                                            Click="CustomBackgroundColor_Click"/>
+                                </StackPanel>
+
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="对齐方式:" Style="{StaticResource SettingLabel}"/>
+                                <ComboBox Grid.Row="2" Grid.Column="1" x:Name="AlignmentComboBox" Margin="5,3"
+                                          Style="{StaticResource ModernComboBox}"
+                                          SelectionChanged="AlignmentComboBox_SelectionChanged">
+                                    <ComboBoxItem Content="左对齐" Tag="left"/>
+                                    <ComboBoxItem Content="居中" Tag="center"/>
+                                    <ComboBoxItem Content="右对齐" Tag="right"/>
+                                </ComboBox>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Background="#F8F9FA" CornerRadius="8" Padding="15" Margin="0,0,0,15">
+                        <StackPanel>
+                            <TextBlock Text="🌐 翻译设置" Style="{StaticResource SectionHeader}"/>
+                            
+                            <CheckBox x:Name="ShowTranslationCheckBox"
+                                      Content="显示翻译歌词"
+                                      FontSize="14"
+                                      FontWeight="SemiBold"
+                                      Foreground="#333333"
+                                      Margin="0,0,0,15"
+                                      Checked="ShowTranslationCheckBox_Changed" 
+                                      Unchecked="ShowTranslationCheckBox_Changed"/>
+                            
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="100"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="翻译字号:" Style="{StaticResource SettingLabel}"/>
+                                <ComboBox Grid.Row="0" Grid.Column="1" x:Name="TranslationFontSizeComboBox" Margin="5,3"
+                                          Style="{StaticResource ModernComboBox}"
+                                          SelectionChanged="TranslationFontSizeComboBox_SelectionChanged">
+                                    <ComboBoxItem Content="10"/>
+                                    <ComboBoxItem Content="12"/>
+                                    <ComboBoxItem Content="14"/>
+                                    <ComboBoxItem Content="16"/>
+                                </ComboBox>
+
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="翻译颜色:" Style="{StaticResource SettingLabel}"/>
+                                <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Margin="5,3">
+                                    <ComboBox x:Name="TranslationColorComboBox" Width="120" 
+                                              Style="{StaticResource ModernComboBox}"
+                                              SelectionChanged="TranslationColorComboBox_SelectionChanged">
+                                        <ComboBoxItem Content="浅灰" Tag="#CCCCCC"/>
+                                        <ComboBoxItem Content="白色" Tag="#FFFFFF"/>
+                                        <ComboBoxItem Content="黄色" Tag="#FFFF00"/>
+                                        <ComboBoxItem Content="青色" Tag="#00FFFF"/>
+                                    </ComboBox>
+                                    <Button Content="自定义" Margin="10,0,0,0" 
+                                            Style="{StaticResource SecondaryButton}"
+                                            Click="CustomTranslationColor_Click"/>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Background="#F8F9FA" CornerRadius="8" Padding="15" Margin="0,0,0,15">
+                        <StackPanel>
+                            <TextBlock Text="👀 实时预览" Style="{StaticResource SectionHeader}"/>
+                            
+                            <Border x:Name="PreviewBorder"
+                                    Background="{Binding ElementName=BackgroundColorComboBox, Path=SelectedItem.Tag}"
+                                    BorderBrush="#E0E0E0" 
+                                    BorderThickness="1" 
+                                    CornerRadius="6"
+                                    Padding="20"
+                                    Height="100"
+                                    VerticalAlignment="Center">
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock x:Name="PreviewText" 
+                                               Text="这是预览文本效果"
+                                               HorizontalAlignment="Center"
+                                               FontFamily="{Binding ElementName=FontFamilyComboBox, Path=SelectedItem.Content}"
+                                               FontSize="{Binding ElementName=FontSizeComboBox, Path=SelectedItem.Content}"
+                                               Foreground="{Binding ElementName=FontColorComboBox, Path=SelectedItem.Tag}"/>
+                                    <TextBlock x:Name="PreviewTranslation" 
+                                               Text="This is preview translation"
+                                               HorizontalAlignment="Center"
+                                               FontSize="{Binding ElementName=TranslationFontSizeComboBox, Path=SelectedItem.Content}"
+                                               Foreground="{Binding ElementName=TranslationColorComboBox, Path=SelectedItem.Tag}"
+                                               Margin="0,8,0,0"
+                                               Visibility="Visible"/>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+            
+            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,15,0,0">
+                <Button x:Name="ApplyButton"
+                        Content="应用"
+                        Style="{StaticResource SecondaryButton}"
+                        Click="ApplyButton_Click"
+                        Width="80"
+                        Margin="0,0,10,0"/>
+                <Button x:Name="OkButton"
+                        Content="确定"
+                        Style="{StaticResource ModernButton}"
+                        Click="OkButton_Click"
+                        Width="80"
+                        Margin="10,0,10,0"/>
+                <Button x:Name="CancelButton"
+                        Content="取消"
+                        Style="{StaticResource SecondaryButton}"
+                        Click="CancelButton_Click"
+                        Width="80"
+                        Margin="10,0,0,0"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>

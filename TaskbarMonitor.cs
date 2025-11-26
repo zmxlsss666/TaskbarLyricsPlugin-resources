@@ -18,10 +18,10 @@ namespace TaskbarLyrics
         private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
 
         [DllImport("user32.dll")]
-        private static extern int GetWindowLong(IntPtr hwnd, int index);
+        public static extern int GetWindowLong(IntPtr hwnd, int index);
 
         [DllImport("user32.dll")]
-        private static extern int SetWindowLong(IntPtr hwnd, int index, int newStyle);
+        public static extern int SetWindowLong(IntPtr hwnd, int index, int newStyle);
 
         [DllImport("user32.dll")]
         private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
@@ -38,12 +38,12 @@ namespace TaskbarLyrics
             public int Bottom;
         }
 
-        private const int GWL_EXSTYLE = -20;
-        private const int WS_EX_LAYERED = 0x80000;
-        private const int WS_EX_TRANSPARENT = 0x20;
-        private const int WS_EX_NOACTIVATE = 0x08000000;
-        private const int WS_EX_TOOLWINDOW = 0x00000080;
-        private const int WS_EX_TOPMOST = 0x00000008;
+        public const int GWL_EXSTYLE = -20;
+        public const int WS_EX_LAYERED = 0x80000;
+        public const int WS_EX_TRANSPARENT = 0x20;
+        public const int WS_EX_NOACTIVATE = 0x08000000;
+        public const int WS_EX_TOOLWINDOW = 0x00000080;
+        public const int WS_EX_TOPMOST = 0x00000008;
         private const int HWND_TOPMOST = -1;
         private const uint SWP_NOSIZE = 0x0001;
         private const uint SWP_NOMOVE = 0x0002;
@@ -58,7 +58,6 @@ namespace TaskbarLyrics
             
             if (taskbarHandle != IntPtr.Zero && GetWindowRect(taskbarHandle, out RECT rect))
             {
-
                 double dpiScale = GetDpiScale();
                 return new Rect(
                     rect.Left / dpiScale,
@@ -76,7 +75,6 @@ namespace TaskbarLyrics
 
         private static double GetDpiScale()
         {
-
             var mainWindow = Application.Current?.MainWindow;
             if (mainWindow != null)
             {
@@ -109,7 +107,6 @@ namespace TaskbarLyrics
             SetWindowLong(hwnd, GWL_EXSTYLE, 
                 extendedStyle | 
                 WS_EX_LAYERED | 
-                WS_EX_TRANSPARENT | 
                 WS_EX_NOACTIVATE |
                 WS_EX_TOOLWINDOW |
                 WS_EX_TOPMOST);
@@ -132,15 +129,15 @@ namespace TaskbarLyrics
                 ShowWindow(hwnd, SW_SHOWNA);
                 
                 EnableWindowTransparency(window);
-	
+    
                 SetWindowPos(hwnd, (IntPtr)HWND_TOPMOST, 0, 0, 0, 0, 
                     SWP_NOSIZE | SWP_NOMOVE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
                 
-                Debug.WriteLine("On");
+                Debug.WriteLine("Window forced to show");
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Error: {ex.Message}");
+                Debug.WriteLine($"Error forcing window show: {ex.Message}");
             }
         }
 
@@ -154,6 +151,55 @@ namespace TaskbarLyrics
             catch
             {
                 return false;
+            }
+        }
+
+        public static void EnableMouseEvents(Window window)
+        {
+            try
+            {
+                var hwnd = new WindowInteropHelper(window).EnsureHandle();
+                
+                int extendedStyle = GetWindowLong(hwnd, GWL_EXSTYLE);
+                
+                extendedStyle &= ~WS_EX_TRANSPARENT;
+                
+                SetWindowLong(hwnd, GWL_EXSTYLE, 
+                    extendedStyle | 
+                    WS_EX_LAYERED | 
+                    WS_EX_NOACTIVATE |
+                    WS_EX_TOOLWINDOW |
+                    WS_EX_TOPMOST);
+                
+                Debug.WriteLine("Mouse events enabled for window");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error enabling mouse events: {ex.Message}");
+            }
+        }
+
+        public static void DisableMouseEvents(Window window)
+        {
+            try
+            {
+                var hwnd = new WindowInteropHelper(window).EnsureHandle();
+                
+                int extendedStyle = GetWindowLong(hwnd, GWL_EXSTYLE);
+                
+                SetWindowLong(hwnd, GWL_EXSTYLE, 
+                    extendedStyle | 
+                    WS_EX_LAYERED | 
+                    WS_EX_TRANSPARENT |
+                    WS_EX_NOACTIVATE |
+                    WS_EX_TOOLWINDOW |
+                    WS_EX_TOPMOST);
+                
+                Debug.WriteLine("Mouse events disabled for window");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error disabling mouse events: {ex.Message}");
             }
         }
     }

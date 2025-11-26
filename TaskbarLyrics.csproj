@@ -11,7 +11,7 @@
     <AssemblyDescription>任务栏歌词</AssemblyDescription>
     <AssemblyCompany>zmxl</AssemblyCompany>
     <AssemblyProduct>TaskbarLyrics</AssemblyProduct>
-    <AssemblyCopyright>Copyright © 2025</AssemblyCopyright>
+    <AssemblyCopyright>Copyright © 2025 zmxl</AssemblyCopyright>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
     <Version>1.0.0.0</Version>
@@ -19,6 +19,16 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Fonts\MiSans-Regular.ttf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="AboutWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
 
 </Project>
