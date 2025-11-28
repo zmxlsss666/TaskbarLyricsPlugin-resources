@@ -169,7 +169,7 @@
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
 
-                                <TextBlock Grid.Row="0" Grid.Column="0" Text="字体家族:" Style="{StaticResource SettingLabel}"/>
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="字体:" Style="{StaticResource SettingLabel}"/>
                                 <ComboBox Grid.Row="0" Grid.Column="1" x:Name="FontFamilyComboBox" Margin="5,3"
                                           Style="{StaticResource ModernComboBox}"
                                           SelectionChanged="FontFamilyComboBox_SelectionChanged">
@@ -380,4 +380,5 @@
             </StackPanel>
         </Grid>
     </Border>
+
 </Window>
