@@ -328,8 +328,15 @@ namespace TaskbarLyrics
 
             foreach (var wordTiming in wordTimings)
             {
-                if (string.IsNullOrEmpty(wordTiming.Text) || wordTiming.Text == " ")
+                if (string.IsNullOrEmpty(wordTiming.Text))
                     continue;
+
+                if (wordTiming.Text == " ")
+                {
+                    var spaceElement = CreateSpaceElement(fontFamily, fontSize);
+                    panel.Children.Add(spaceElement);
+                    continue;
+                }
 
                 double progress = _wordProgressCache.ContainsKey(wordTiming) ? _wordProgressCache[wordTiming] : 0;
 
@@ -348,10 +355,36 @@ namespace TaskbarLyrics
             return panel;
         }
 
+        private static FrameworkElement CreateSpaceElement(string fontFamily, int fontSize)
+        {
+            var measuringBlock = new TextBlock
+            {
+                Text = " ",
+                FontFamily = new FontFamily(fontFamily),
+                FontSize = fontSize
+            };
+            
+            measuringBlock.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+            measuringBlock.Arrange(new Rect(0, 0, measuringBlock.DesiredSize.Width, measuringBlock.DesiredSize.Height));
+            
+            double spaceWidth = measuringBlock.DesiredSize.Width;
+            
+            return new Border
+            {
+                Width = spaceWidth,
+                Height = measuringBlock.DesiredSize.Height,
+                Background = Brushes.Transparent,
+                Margin = new Thickness(0)
+            };
+        }
+
         private static void UpdateProgressCache(List<WordTiming> wordTimings, int currentPosition)
         {
             foreach (var wordTiming in wordTimings)
             {
+                if (wordTiming.Text == " ")
+                    continue;
+
                 double targetProgress = CalculateWordProgress(wordTiming, currentPosition);
                 
                 if (!_wordProgressCache.ContainsKey(wordTiming))
