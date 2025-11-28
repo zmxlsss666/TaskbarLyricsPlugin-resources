@@ -10,6 +10,7 @@ namespace TaskbarLyrics
         private System.Windows.Forms.NotifyIcon _notifyIcon;
         private SettingsWindow _settingsWindow;
         private AboutWindow _aboutWindow;
+        private System.Windows.Forms.ToolStripMenuItem _toggleTranslationItem;
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -70,9 +71,12 @@ namespace TaskbarLyrics
             contextMenu.Items.Add(alignmentMenuItem);
 
             var translationMenuItem = new System.Windows.Forms.ToolStripMenuItem("翻译设置");
-            var toggleTranslationItem = new System.Windows.Forms.ToolStripMenuItem("显示翻译");
-            toggleTranslationItem.Click += (s, e) => ToggleTranslation();
-            translationMenuItem.DropDownItems.Add(toggleTranslationItem);
+            
+            _toggleTranslationItem = new System.Windows.Forms.ToolStripMenuItem("显示翻译");
+            _toggleTranslationItem.Click += (s, e) => ToggleTranslation();
+            UpdateTranslationMenuItem();
+            
+            translationMenuItem.DropDownItems.Add(_toggleTranslationItem);
             contextMenu.Items.Add(translationMenuItem);
 
             contextMenu.Items.Add(new System.Windows.Forms.ToolStripSeparator());
@@ -159,12 +163,26 @@ namespace TaskbarLyrics
             }
         }
 
+        private void UpdateTranslationMenuItem()
+        {
+            if (_toggleTranslationItem != null)
+            {
+                bool showTranslation = ConfigManager.CurrentConfig.ShowTranslation;
+                _toggleTranslationItem.Text = showTranslation ? "隐藏翻译" : "显示翻译";
+                _toggleTranslationItem.Checked = showTranslation;
+            }
+        }
+
         private void ShowSettingsWindow()
         {
             if (_settingsWindow == null || !_settingsWindow.IsLoaded)
             {
                 _settingsWindow = new SettingsWindow();
-                _settingsWindow.Closed += (s, e) => _settingsWindow = null;
+                _settingsWindow.Closed += (s, e) => 
+                {
+                    _settingsWindow = null;
+                    UpdateTranslationMenuItem();
+                };
             }
             _settingsWindow.Show();
             _settingsWindow.Activate();
@@ -235,6 +253,7 @@ namespace TaskbarLyrics
         {
             ConfigManager.CurrentConfig.ShowTranslation = !ConfigManager.CurrentConfig.ShowTranslation;
             ConfigManager.SaveConfig();
+            UpdateTranslationMenuItem();
             RefreshMainWindow();
         }
 
