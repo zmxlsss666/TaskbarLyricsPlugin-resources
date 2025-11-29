@@ -43,7 +43,7 @@ namespace TaskbarLyrics
             contextMenu.Items.Add(new System.Windows.Forms.ToolStripSeparator());
 
             var fontMenuItem = new System.Windows.Forms.ToolStripMenuItem("字体设置");
-            var fontFamilyItem = new System.Windows.Forms.ToolStripMenuItem("字体家族");
+            var fontFamilyItem = new System.Windows.Forms.ToolStripMenuItem("字体");
             var fontSizeItem = new System.Windows.Forms.ToolStripMenuItem("字体大小");
             var fontColorItem = new System.Windows.Forms.ToolStripMenuItem("字体颜色");
             
@@ -316,3 +316,4 @@ namespace TaskbarLyrics
         }
     }
 }
+
