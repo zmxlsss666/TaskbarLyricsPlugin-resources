@@ -46,6 +46,23 @@ namespace TaskbarLyrics
             {
                 Process.Start(new ProcessStartInfo
                 {
+                    FileName = "https://github.com/zmxlsss666/TaskbarLyricsPlugin",
+                    UseShellExecute = true
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"无法打开链接: {ex.Message}", "错误", 
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void ProjectLinkButton2_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Process.Start(new ProcessStartInfo
+                {
                     FileName = "https://github.com/zmxlsss666/TaskbarLyricsPlugin-resources",
                     UseShellExecute = true
                 });
