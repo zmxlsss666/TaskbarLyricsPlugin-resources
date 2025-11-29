@@ -11,7 +11,7 @@ namespace TaskbarLyrics
     {
         private readonly HttpClient _httpClient;
         private const string LyricsApiUrl = "http://localhost:35374/api/lyric";
-        private const string LyricsPwApiUrl = "http://localhost:35374/api/lyricspw";
+        private const string LyricsPwApiUrl = "http://localhost:35374/api/lyricfile";
         private const string ConfigApiUrl = "http://localhost:35374/api/config";
         private const string NowPlayingApiUrl = "http://localhost:35374/api/now-playing";
         private const string PlayPauseApiUrl = "http://localhost:35374/api/play-pause";
@@ -110,4 +110,5 @@ namespace TaskbarLyrics
             }
         }
     }
+
 }
