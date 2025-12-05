@@ -14,15 +14,15 @@
         MouseLeave="Window_MouseLeave">
     
     <Grid x:Name="MainGrid">
-        <Border x:Name="LyricsContainer" 
-                Background="Transparent" 
+        <Border x:Name="LyricsContainer"
+                Background="Transparent"
                 Padding="10,4"
                 VerticalAlignment="Center"
                 MouseEnter="LyricsContainer_MouseEnter"
                 MouseLeave="LyricsContainer_MouseLeave">
-            <ContentControl x:Name="LyricsContent" 
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center"/>
+            <ContentControl x:Name="LyricsContent"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Center"/>
         </Border>
         
         <Border x:Name="ControlPanelBorder"

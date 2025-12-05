@@ -5,27 +5,80 @@ using System.Diagnostics;
 
 namespace TaskbarLyrics
 {
+    /// <summary>
+    /// 应用程序主类
+    /// 负责：
+    /// 1. 初始化配置和日志系统
+    /// 2. 管理系统托盘图标和右键菜单
+    /// 3. 处理全局异常
+    /// 4. 管理设置窗口和关于窗口
+    /// 5. 提供快捷设置功能（字体、颜色、对齐等）
+    /// </summary>
     public partial class App : Application
     {
-        private System.Windows.Forms.NotifyIcon _notifyIcon;
-        private SettingsWindow _settingsWindow;
-        private AboutWindow _aboutWindow;
-        private System.Windows.Forms.ToolStripMenuItem _toggleTranslationItem;
+        #region 私有字段
 
+        // 系统托盘相关
+        private System.Windows.Forms.NotifyIcon _notifyIcon;  // 系统托盘图标
+
+        // 窗口管理
+        private SettingsWindow _settingsWindow;              // 设置窗口实例
+        private AboutWindow _aboutWindow;                    // 关于窗口实例
+
+        // 右键菜单项
+        private System.Windows.Forms.ToolStripMenuItem _toggleTranslationItem; // 显示/隐藏翻译菜单项
+
+        #endregion
+
+        #region 应用程序生命周期
+
+        /// <summary>
+        /// 应用程序启动事件处理程序
+        /// 执行必要的初始化操作
+        /// </summary>
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
 
+            // 初始化配置管理器，加载用户设置
             ConfigManager.Initialize();
 
+            // 应用日志级别配置
+            // 必须在配置初始化后执行，以便读取用户的日志设置
+            ApplyLogLevelConfig();
+
+            // 创建系统托盘图标和右键菜单
             CreateTrayIcon();
 
+            // 注册全局异常处理程序
+            // 捕获未处理的异常，记录日志并显示友好提示
             AppDomain.CurrentDomain.UnhandledException += (s, args) =>
             {
-                MessageBox.Show($"Error: {args.ExceptionObject}", "错误", 
+                Logger.Error($"未处理的异常: {args.ExceptionObject}");
+                MessageBox.Show($"Error: {args.ExceptionObject}", "错误",
                     MessageBoxButton.OK, MessageBoxImage.Error);
             };
         }
+
+        /// <summary>
+        /// 应用程序退出事件处理程序
+        /// 清理资源
+        /// </summary>
+        protected override void OnExit(ExitEventArgs e)
+        {
+            try
+            {
+                // 释放托盘图标资源
+                _notifyIcon?.Dispose();
+                base.OnExit(e);
+            }
+            catch
+            {
+                // 忽略退出时的异常，确保程序能够正常退出
+            }
+        }
+
+        #endregion
 
         private void CreateTrayIcon()
         {
@@ -98,34 +151,7 @@ namespace TaskbarLyrics
             InitializeFontMenu(fontFamilyItem, fontSizeItem, fontColorItem);
         }
 
-        private Icon CreateDefaultIcon()
-        {
-            try
-            {
-                Bitmap bmp = new Bitmap(16, 16);
-                using (Graphics g = Graphics.FromImage(bmp))
-                {
-                    g.Clear(Color.Transparent);
-                    using (Brush brush = new SolidBrush(Color.FromArgb(255, 0, 150, 136)))
-                    {
-                        g.FillRectangle(brush, 0, 0, 16, 16);
-                    }
-                    using (Pen pen = new Pen(Color.White, 2))
-                    {
-                        using (var font = new System.Drawing.Font(new System.Drawing.FontFamily("Arial"), 10, System.Drawing.FontStyle.Bold))
-                        {
-                            g.DrawString("L", font, Brushes.White, 2, 0);
-                        }
-                    }
-                }
-                return Icon.FromHandle(bmp.GetHicon());
-            }
-            catch
-            {
-                return SystemIcons.Application;
-            }
-        }
-
+        
         private void InitializeFontMenu(System.Windows.Forms.ToolStripMenuItem fontFamilyItem, System.Windows.Forms.ToolStripMenuItem fontSizeItem, System.Windows.Forms.ToolStripMenuItem fontColorItem)
         {
             var fontFamilies = new[] { "MiSans", "Microsoft YaHei", "SimHei", "SimSun", "Arial", "Segoe UI" };
@@ -299,19 +325,46 @@ namespace TaskbarLyrics
             }
             catch (Exception ex)
             {
+                Logger.Error($"关闭应用程序时出错: {ex.Message}");
                 Environment.Exit(0);
             }
         }
 
-        protected override void OnExit(ExitEventArgs e)
+        private void ApplyLogLevelConfig()
         {
             try
             {
-                _notifyIcon?.Dispose();
-                base.OnExit(e);
+                var config = ConfigManager.CurrentConfig;
+                string logLevelConfig = config?.LogLevel?.ToLower() ?? "auto";
+
+                LogLevel targetLogLevel;
+
+                switch (logLevelConfig)
+                {
+                    case "off":
+                        targetLogLevel = LogLevel.Off;
+                        break;
+                    case "error":
+                        targetLogLevel = LogLevel.Error;
+                        break;
+                    case "info":
+                        targetLogLevel = LogLevel.Info;
+                        break;
+                    case "debug":
+                        targetLogLevel = LogLevel.Debug;
+                        break;
+                    case "auto":
+                    default:
+                        // 使用自动检测的逻辑（已在Logger静态构造函数中处理）
+                        return;
+                }
+
+                Logger.SetLogLevel(targetLogLevel);
             }
-            catch
+            catch (Exception ex)
             {
+                // 如果设置日志级别失败，继续使用默认级别
+                System.Diagnostics.Debug.WriteLine($"设置日志级别失败: {ex.Message}");
             }
         }
     }

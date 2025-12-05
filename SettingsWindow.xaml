@@ -207,9 +207,6 @@
                                         <ComboBoxItem Content="青色" Tag="#00FFFF"/>
                                         <ComboBoxItem Content="粉色" Tag="#FF00FF"/>
                                     </ComboBox>
-                                    <Button Content="自定义" Margin="10,0,0,0" 
-                                            Style="{StaticResource SecondaryButton}"
-                                            Click="CustomFontColor_Click"/>
                                 </StackPanel>
                             </Grid>
                         </StackPanel>
@@ -232,9 +229,10 @@
 
                                 <TextBlock Grid.Row="0" Grid.Column="0" Text="高亮颜色:" Style="{StaticResource SettingLabel}"/>
                                 <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Margin="5,3">
-                                    <ComboBox x:Name="HighlightColorComboBox" Width="120" 
+                                    <ComboBox x:Name="HighlightColorComboBox" Width="120"
                                               Style="{StaticResource ModernComboBox}"
                                               SelectionChanged="HighlightColorComboBox_SelectionChanged">
+                                        <ComboBoxItem Content="无" Tag="DISABLED"/>
                                         <ComboBoxItem Content="青色" Tag="#FF00FFFF"/>
                                         <ComboBoxItem Content="黄色" Tag="#FFFFFF00"/>
                                         <ComboBoxItem Content="绿色" Tag="#FF00FF00"/>
@@ -242,14 +240,11 @@
                                         <ComboBoxItem Content="橙色" Tag="#FFFFA500"/>
                                         <ComboBoxItem Content="金色" Tag="#FFFFD700"/>
                                     </ComboBox>
-                                    <Button Content="自定义" Margin="10,0,0,0" 
-                                            Style="{StaticResource SecondaryButton}"
-                                            Click="CustomHighlightColor_Click"/>
                                 </StackPanel>
 
                                 <TextBlock Grid.Row="1" Grid.Column="0" Text="背景颜色:" Style="{StaticResource SettingLabel}"/>
                                 <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Margin="5,3">
-                                    <ComboBox x:Name="BackgroundColorComboBox" Width="120" 
+                                    <ComboBox x:Name="BackgroundColorComboBox" Width="120"
                                               Style="{StaticResource ModernComboBox}"
                                               SelectionChanged="BackgroundColorComboBox_SelectionChanged">
                                         <ComboBoxItem Content="透明" Tag="#00000000"/>
@@ -257,9 +252,6 @@
                                         <ComboBoxItem Content="黑色" Tag="#FF000000"/>
                                         <ComboBoxItem Content="深灰" Tag="#FF202020"/>
                                     </ComboBox>
-                                    <Button Content="自定义" Margin="10,0,0,0" 
-                                            Style="{StaticResource SecondaryButton}"
-                                            Click="CustomBackgroundColor_Click"/>
                                 </StackPanel>
 
                                 <TextBlock Grid.Row="2" Grid.Column="0" Text="对齐方式:" Style="{StaticResource SettingLabel}"/>
@@ -276,15 +268,200 @@
 
                     <Border Background="#F8F9FA" CornerRadius="8" Padding="15" Margin="0,0,0,15">
                         <StackPanel>
+                            <TextBlock Text="📍 位置设置" Style="{StaticResource SectionHeader}"/>
+
+                            <Grid Margin="0,0,0,15">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- 上方向按钮组 -->
+                                <StackPanel Grid.Row="0" Grid.Column="1"
+                                            Orientation="Horizontal"
+                                            HorizontalAlignment="Center"
+                                            Margin="0,0,0,10">
+                                    <Button x:Name="MoveUpLargeButton"
+                                            Content="▲▲"
+                                            FontSize="14"
+                                            FontWeight="Bold"
+                                            Style="{StaticResource SecondaryButton}"
+                                            Width="45"
+                                            Height="35"
+                                            Margin="0,0,5,0"
+                                            Tag="Up,Large"
+                                            Click="MovePosition_Click"/>
+                                    <Button x:Name="MoveUpSmallButton"
+                                            Content="▲"
+                                            FontSize="14"
+                                            FontWeight="Bold"
+                                            Style="{StaticResource SecondaryButton}"
+                                            Width="45"
+                                            Height="35"
+                                            Margin="5,0,0,0"
+                                            Tag="Up,Small"
+                                            Click="MovePosition_Click"/>
+                                </StackPanel>
+
+                                <!-- 左右方向按钮组和中间显示 -->
+                                <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- 左方向按钮组 -->
+                                    <StackPanel Grid.Column="0"
+                                                Orientation="Horizontal"
+                                                VerticalAlignment="Center"
+                                                Margin="0,0,10,0">
+                                        <Button x:Name="MoveLeftLargeButton"
+                                                Content="◀◀"
+                                                FontSize="14"
+                                                FontWeight="Bold"
+                                                Style="{StaticResource SecondaryButton}"
+                                                Width="45"
+                                                Height="35"
+                                                Margin="0,0,5,0"
+                                                Tag="Left,Large"
+                                                Click="MovePosition_Click"/>
+                                        <Button x:Name="MoveLeftSmallButton"
+                                                Content="◀"
+                                                FontSize="14"
+                                                FontWeight="Bold"
+                                                Style="{StaticResource SecondaryButton}"
+                                                Width="45"
+                                                Height="35"
+                                                Margin="5,0,0,0"
+                                                Tag="Left,Small"
+                                                Click="MovePosition_Click"/>
+                                    </StackPanel>
+
+                                    <!-- 中间区域 -->
+                                    <Grid Grid.Column="1">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <!-- 当前偏移显示 -->
+                                        <Border Grid.Row="0"
+                                                Background="White"
+                                                BorderBrush="#E0E0E0"
+                                                BorderThickness="1"
+                                                CornerRadius="4"
+                                                Padding="10"
+                                                Margin="0,0,0,10">
+                                            <StackPanel HorizontalAlignment="Center">
+                                                <TextBlock Text="位置偏移"
+                                                           FontSize="12"
+                                                           FontWeight="SemiBold"
+                                                           HorizontalAlignment="Center"
+                                                           Foreground="#555"/>
+                                                <TextBlock x:Name="OffsetDisplayText"
+                                                           Text="X: 0, Y: 0"
+                                                           FontSize="11"
+                                                           HorizontalAlignment="Center"
+                                                           Foreground="#333"
+                                                           Margin="0,2,0,0"/>
+                                            </StackPanel>
+                                        </Border>
+
+                                        <!-- 控制按钮 -->
+                                        <StackPanel Grid.Row="1"
+                                                    Orientation="Horizontal"
+                                                    HorizontalAlignment="Center">
+                                            <Button x:Name="ResetPositionButton"
+                                                    Content="重置"
+                                                    FontSize="12"
+                                                    Style="{StaticResource SecondaryButton}"
+                                                    Width="60"
+                                                    Height="35"
+                                                    Click="ResetPosition_Click"/>
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <!-- 右方向按钮组 -->
+                                    <StackPanel Grid.Column="2"
+                                                Orientation="Horizontal"
+                                                VerticalAlignment="Center"
+                                                Margin="10,0,0,0">
+                                        <Button x:Name="MoveRightSmallButton"
+                                                Content="▶"
+                                                FontSize="14"
+                                                FontWeight="Bold"
+                                                Style="{StaticResource SecondaryButton}"
+                                                Width="45"
+                                                Height="35"
+                                                Margin="0,0,5,0"
+                                                Tag="Right,Small"
+                                                Click="MovePosition_Click"/>
+                                        <Button x:Name="MoveRightLargeButton"
+                                                Content="▶▶"
+                                                FontSize="14"
+                                                FontWeight="Bold"
+                                                Style="{StaticResource SecondaryButton}"
+                                                Width="45"
+                                                Height="35"
+                                                Margin="5,0,0,0"
+                                                Tag="Right,Large"
+                                                Click="MovePosition_Click"/>
+                                    </StackPanel>
+                                </Grid>
+
+                                <!-- 下方向按钮组 -->
+                                <StackPanel Grid.Row="2" Grid.Column="1"
+                                            Orientation="Horizontal"
+                                            HorizontalAlignment="Center"
+                                            Margin="0,10,0,0">
+                                    <Button x:Name="MoveDownSmallButton"
+                                            Content="▼"
+                                            FontSize="14"
+                                            FontWeight="Bold"
+                                            Style="{StaticResource SecondaryButton}"
+                                            Width="45"
+                                            Height="35"
+                                            Margin="0,0,5,0"
+                                            Tag="Down,Small"
+                                            Click="MovePosition_Click"/>
+                                    <Button x:Name="MoveDownLargeButton"
+                                            Content="▼▼"
+                                            FontSize="14"
+                                            FontWeight="Bold"
+                                            Style="{StaticResource SecondaryButton}"
+                                            Width="45"
+                                            Height="35"
+                                            Margin="5,0,0,0"
+                                            Tag="Down,Large"
+                                            Click="MovePosition_Click"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <TextBlock Text="使用方向按钮调整歌词显示位置，双箭头移动 20 像素，单箭头移动 1 像素"
+                                       FontSize="12"
+                                       Foreground="#666666"
+                                       TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Background="#F8F9FA" CornerRadius="8" Padding="15" Margin="0,0,0,15">
+                        <StackPanel>
                             <TextBlock Text="🌐 翻译设置" Style="{StaticResource SectionHeader}"/>
-                            
+
                             <CheckBox x:Name="ShowTranslationCheckBox"
                                       Content="显示翻译歌词"
                                       FontSize="14"
                                       FontWeight="SemiBold"
                                       Foreground="#333333"
                                       Margin="0,0,0,15"
-                                      Checked="ShowTranslationCheckBox_Changed" 
+                                      Checked="ShowTranslationCheckBox_Changed"
                                       Unchecked="ShowTranslationCheckBox_Changed"/>
                             
                             <Grid>
@@ -317,11 +494,81 @@
                                         <ComboBoxItem Content="黄色" Tag="#FFFF00"/>
                                         <ComboBoxItem Content="青色" Tag="#00FFFF"/>
                                     </ComboBox>
-                                    <Button Content="自定义" Margin="10,0,0,0" 
-                                            Style="{StaticResource SecondaryButton}"
-                                            Click="CustomTranslationColor_Click"/>
                                 </StackPanel>
                             </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Background="#F8F9FA" CornerRadius="8" Padding="15" Margin="0,0,0,15">
+                        <StackPanel>
+                            <TextBlock Text="⚙️ 行为设置" Style="{StaticResource SectionHeader}"/>
+
+                            <CheckBox x:Name="HideOnFullscreenCheckBox"
+                                      Content="检测到全屏应用时隐藏歌词"
+                                      FontSize="14"
+                                      FontWeight="SemiBold"
+                                      Foreground="#333333"
+                                      Margin="0,0,0,10"/>
+
+                            <TextBlock Text="当检测到全屏应用（如视频播放器、游戏等）时，自动隐藏歌词以免干扰。退出全屏后会自动恢复显示。"
+                                       FontSize="12"
+                                       Foreground="#666666"
+                                       TextWrapping="Wrap"
+                                       Margin="0,0,0,15"/>
+
+                            <TextBlock Text="歌词宽度设置:" Style="{StaticResource SettingLabel}"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                <TextBlock Text="宽度 (像素):"
+                                           FontSize="14"
+                                           FontWeight="SemiBold"
+                                           VerticalAlignment="Center"
+                                           Margin="0,0,10,0"/>
+                                <TextBox x:Name="LyricsWidthTextBox"
+                                         Width="80"
+                                         Height="25"
+                                         Text="800"
+                                         FontSize="13"
+                                         VerticalContentAlignment="Center"/>
+                                                            </StackPanel>
+
+                            <CheckBox x:Name="EnableLyricsFilterCheckBox"
+                                      Content="启用歌词过滤"
+                                      FontSize="14"
+                                      FontWeight="SemiBold"
+                                      Foreground="#333333"
+                                      Margin="0,0,0,10"/>
+
+                            <TextBlock Text="过滤规则 (正则表达式):" Style="{StaticResource SettingLabel}" Margin="0,0,0,5"/>
+                            <TextBox x:Name="LyricsFilterRegexTextBox"
+                                     Height="60"
+                                     TextWrapping="Wrap"
+                                     AcceptsReturn="True"
+                                     VerticalScrollBarVisibility="Auto"
+                                     FontFamily="Consolas"
+                                     FontSize="12"
+                                     Margin="0,0,0,5"
+                                     ToolTip="支持正则表达式，用于过滤不需要显示的歌词行（如制作人信息、许可声明等）"/>
+                            <TextBlock Text="默认规则会过滤包含冒号的非歌词行（如'作曲：XXX'）以及其他特定格式的内容。"
+                                       FontSize="12"
+                                       Foreground="#666666"
+                                       TextWrapping="Wrap"
+                                       Margin="0,0,0,15"/>
+
+                            <TextBlock Text="日志级别:" Style="{StaticResource SettingLabel}"/>
+                            <ComboBox x:Name="LogLevelComboBox" Margin="5,3"
+                                      Style="{StaticResource ModernComboBox}"
+                                      SelectionChanged="LogLevelComboBox_SelectionChanged">
+                                <ComboBoxItem Content="自动 (Auto)" Tag="auto"/>
+                                <ComboBoxItem Content="关闭 (Off)" Tag="off"/>
+                                <ComboBoxItem Content="仅错误 (Error)" Tag="error"/>
+                                <ComboBoxItem Content="信息 (Info)" Tag="info"/>
+                                <ComboBoxItem Content="调试 (Debug)" Tag="debug"/>
+                            </ComboBox>
+                            <TextBlock Text="控制日志输出的详细程度。Auto: 开发环境Debug，生产环境Off。"
+                                       FontSize="12"
+                                       Foreground="#666666"
+                                       TextWrapping="Wrap"
+                                       Margin="0,3,0,0"/>
                         </StackPanel>
                     </Border>
 
@@ -357,7 +604,7 @@
                     </Border>
                 </StackPanel>
             </ScrollViewer>
-            
+                     
             <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,15,0,0">
                 <Button x:Name="ApplyButton"
                         Content="应用"

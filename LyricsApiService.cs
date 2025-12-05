@@ -7,33 +7,61 @@ using TaskbarLyrics.Models;
 
 namespace TaskbarLyrics
 {
-    public class LyricsApiService
+    /// <summary>
+    /// 歌词API服务类
+    /// 负责与本地歌词API服务器（端口35374）通信
+    /// 提供歌词获取、配置管理、播放控制等功能
+    /// </summary>
+    public class LyricsApiService : IDisposable
     {
-        private readonly HttpClient _httpClient;
-        private const string LyricsApiUrl = "http://localhost:35374/api/lyric";
-        private const string LyricsPwApiUrl = "http://localhost:35374/api/lyricfile";
-        private const string ConfigApiUrl = "http://localhost:35374/api/config";
-        private const string NowPlayingApiUrl = "http://localhost:35374/api/now-playing";
-        private const string PlayPauseApiUrl = "http://localhost:35374/api/play-pause";
-        private const string NextTrackApiUrl = "http://localhost:35374/api/next-track";
-        private const string PreviousTrackApiUrl = "http://localhost:35374/api/previous-track";
+        #region 私有字段
 
+        private readonly HttpClient _httpClient;
+
+        // API端点常量 - 本地API服务器地址（端口35374）
+        private const string LyricsApiUrl = "http://localhost:35374/api/lyric";           // 获取音乐内置歌词
+        private const string LyricsPwApiUrl = "http://localhost:35374/api/lyricfile";    // 获取LCR歌词文件
+        private const string NowPlayingApiUrl = "http://localhost:35374/api/now-playing"; // 获取当前播放信息
+        private const string PlayPauseApiUrl = "http://localhost:35374/api/play-pause";    // 播放/暂停
+        private const string NextTrackApiUrl = "http://localhost:35374/api/next-track";     // 下一首
+        private const string PreviousTrackApiUrl = "http://localhost:35374/api/previous-track"; // 上一首
+
+        #endregion
+
+        #region 构造函数
+
+        /// <summary>
+        /// 构造函数，初始化HTTP客户端
+        /// </summary>
         public LyricsApiService()
         {
             _httpClient = new HttpClient();
+            // 设置5秒超时，避免长时间等待
             _httpClient.Timeout = TimeSpan.FromSeconds(5);
         }
 
+        #endregion
+
+        #region 歌词相关API
+
+        /// <summary>
+        /// 获取歌词
+        /// 优先尝试本地歌词API，失败后尝试联网搜索API
+        /// </summary>
+        /// <returns>歌词响应对象</returns>
         public async Task<LyricsResponse> GetLyricsAsync()
         {
             try
             {
+                // 首先尝试获取本地歌词
                 var response = await _httpClient.GetStringAsync(LyricsApiUrl);
                 return JsonConvert.DeserializeObject<LyricsResponse>(response);
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Error getting lyrics from {LyricsApiUrl}: {ex.Message}");
+                Debug.WriteLine($"获取本地歌词时出错: {ex.Message}");
+
+                // 本地歌词失败，尝试联网搜索的歌词
                 try
                 {
                     var response = await _httpClient.GetStringAsync(LyricsPwApiUrl);
@@ -41,13 +69,21 @@ namespace TaskbarLyrics
                 }
                 catch (Exception ex2)
                 {
-                    Debug.WriteLine($"Error getting lyrics from backup API {LyricsPwApiUrl}: {ex2.Message}");
+                    Debug.WriteLine($"从联网搜索API {LyricsPwApiUrl} 获取歌词时出错: {ex2.Message}");
                     return new LyricsResponse { Status = "error" };
                 }
             }
         }
 
+        #endregion
 
+        #region 播放控制API
+
+        /// <summary>
+        /// 获取当前播放信息
+        /// 包括歌曲标题、艺术家、播放位置和播放状态
+        /// </summary>
+        /// <returns>播放信息响应对象</returns>
         public async Task<NowPlayingResponse> GetNowPlayingAsync()
         {
             try
@@ -57,58 +93,80 @@ namespace TaskbarLyrics
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Error getting now playing: {ex.Message}");
+                Debug.WriteLine($"获取当前播放信息时出错: {ex.Message}");
                 return new NowPlayingResponse { Status = "error" };
             }
         }
 
+        /// <summary>
+        /// 播放/暂停切换
+        /// </summary>
+        /// <returns>操作是否成功</returns>
         public async Task<bool> PlayPauseAsync()
         {
             try
             {
-                Debug.WriteLine($"Calling Play/Pause API (GET): {PlayPauseApiUrl}");
+                // 注意：高频调用，不输出日志以避免日志泛滥
                 var response = await _httpClient.GetAsync(PlayPauseApiUrl);
-                Debug.WriteLine($"Play/Pause response status: {response.StatusCode}");
                 return response.IsSuccessStatusCode;
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Error in Play/Pause: {ex.Message}");
+                Debug.WriteLine($"播放/暂停时出错: {ex.Message}");
                 return false;
             }
         }
 
+        /// <summary>
+        /// 播放下一首
+        /// </summary>
+        /// <returns>操作是否成功</returns>
         public async Task<bool> NextTrackAsync()
         {
             try
             {
-                Debug.WriteLine($"Calling Next Track API (GET): {NextTrackApiUrl}");
+                // 注意：高频调用，不输出日志以避免日志泛滥
                 var response = await _httpClient.GetAsync(NextTrackApiUrl);
-                Debug.WriteLine($"Next Track response status: {response.StatusCode}");
                 return response.IsSuccessStatusCode;
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Error in Next Track: {ex.Message}");
+                Debug.WriteLine($"下一曲时出错: {ex.Message}");
                 return false;
             }
         }
 
+        /// <summary>
+        /// 播放上一首
+        /// </summary>
+        /// <returns>操作是否成功</returns>
         public async Task<bool> PreviousTrackAsync()
         {
             try
             {
-                Debug.WriteLine($"Calling Previous Track API (GET): {PreviousTrackApiUrl}");
+                // 注意：高频调用，不输出日志以避免日志泛滥
                 var response = await _httpClient.GetAsync(PreviousTrackApiUrl);
-                Debug.WriteLine($"Previous Track response status: {response.StatusCode}");
                 return response.IsSuccessStatusCode;
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Error in Previous Track: {ex.Message}");
+                Debug.WriteLine($"上一曲时出错: {ex.Message}");
                 return false;
             }
         }
-    }
 
+        #endregion
+
+        #region 资源释放
+
+        /// <summary>
+        /// 释放HTTP客户端资源
+        /// </summary>
+        public void Dispose()
+        {
+            _httpClient?.Dispose();
+        }
+
+        #endregion
+    }
 }
